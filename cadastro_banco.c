@@ -12,30 +12,75 @@ typedef struct{
     float saldo; // Saldo da conta
 }banco;
 
-int quant = 0;
+int quant = 0; // Inicializando a variavel da quantidade de contas em 0
 banco conta[Tamanho];
 
-void cadastrar(){
-    char tipo;
+void cadastrar(){ // Funcao para o cadastro de novas contas
+    char tipo, cnova;
+    int id, i, flag=0, posi = 0;
 
-    printf("Digite o numero do cliente: ");
-    scanf("%d", &conta[quant].numero);
+    printf("Digite o id do cliente: ");
+    scanf("%d", &id);
 
-    printf("Digite o numero CPF: ");
-    scanf("%d", &conta[quant].cpf);
+    for (i = 0; i <= quant; i++) { // Repeticao para ver se ja existe uma conta cadastrada no ID do cliente
+        if (conta[i].numero == id) {
+        flag = 1; // flag vira 1 
+        posi = i; // a posicao da conta ja cadastrada é salva, para buscarmos os dados depois
+        }
+    }
 
-    printf("Digite o numero da conta: ");
-    scanf("%d", &conta[quant].conta);
+    if (flag == 1) { // Caso a flag for verdadeira, puxamos o CPF e nome ja existente para a nova conta
+        printf ("Ja existe um cliente com esse id, deseja cadastrar mais uma conta para ele? (s/n)\n");
+        scanf ("%s", &cnova);
 
-    printf("Digite o nome do cliente: ");
-    fflush(stdin);
-    gets(conta[quant].nome);
+        if (tolower(cnova) == 's'){
+            conta[quant].numero = id;
+            
+            conta[quant].cpf = conta[posi].cpf;
+            printf("o CPF da conta e: %d\n", conta[quant].cpf);
+
+            strcpy(conta[quant].nome,conta[posi].nome);
+            printf("O nome do cliente e: %s\n", conta[quant].nome);
+            
+
+            printf("Digite o numero da conta: \n");
+            scanf("%d", &conta[quant].conta);
+            fflush(stdin);
+
+
+        }
+
+        else if (tolower(cnova) == 'n') { // se o cliente nao quiser cadastrar uma nova conta, ele retorna ao menu
+            printf ("Cadastro encerrado, voltando ao menu\n");
+            return;
+        }
+
+        else {
+            printf("Codigo invalido\n");
+            return;
+        }
+
+    }
+
+    else { // caso o id nao tenha nenhuma conta ja cadastrada, o cadastro da nova conta segue normalmente
+        conta[quant].numero = id;
+        printf("Digite o numero CPF: ");
+        scanf("%d", &conta[quant].cpf);
+
+        printf("Digite o numero da conta: ");
+        scanf("%d", &conta[quant].conta);
+
+        printf("Digite o nome do cliente: ");
+        gets(conta[quant].nome);
+        fflush(stdin);
+        
+    }
 
     do{
-        printf("Digite a opcao de conta: (D -> deposito | S - salario | P - pagamento) ");
+        printf("Digite a opcao de conta: (D -> deposito | S - salario | P - poupanca) ");
         scanf("%c", &tipo);
         if(tipo != 'd' && tipo != 'D' && tipo != 'p' && tipo != 'P' && tipo != 's' && tipo != 'S'){
-            printf("Erro, digite apenas entre conta corrente C ou conta poupança P\n");
+            printf("Erro, digite apenas entre conta corrente C, conta salario S ou conta poupanca P\n");
         }
     } while(tipo != 'd' && tipo != 'D' && tipo != 'p' && tipo != 'P' && tipo != 's' && tipo != 'S');
     conta[quant].opcao = tipo;
@@ -43,10 +88,10 @@ void cadastrar(){
     printf("Digite o saldo da conta: ");
     scanf("%f", &conta[quant].saldo);
 
-    quant++;
+    quant++; // Adicionando 1 ao contador do numero de contas
 }
 
-void mostrar(int ind){
+void mostrar(int ind){ // Funcao para exibir os dados de determinada conta
     printf("Cliente encontrado\n");
     printf("==============================\n");
     printf("Numero da conta: %d\n", conta[ind].conta);
@@ -58,12 +103,13 @@ void mostrar(int ind){
     printf("==============================\n");
 }
 
-void apagar(int ind){
+void apagar(int ind){ // Funcao para apagar determinada conta ja cadastrada
     char car;
     do{
         mostrar(ind);
         printf("Deseja apagar? (s/n) ");
         scanf("%c", &car);
+        fflush(stdin);
         if(car != 's' && car != 'S' && car != 'n' && car != 'N'){
             printf("Erro, digite apenas S ou N\n");
         }
@@ -73,7 +119,7 @@ void apagar(int ind){
         for(int i = ind; i < quant-1; i++){
             conta[i] = conta[i+1];
         }
-        quant--;
+        quant--; // Reduz o vetor da quantidade de contas em 1, liberando assim, mais um espaço para cadastro
         printf("Cliente excluido\n");
 
     } else if(car == 'n' || car == 'N'){
@@ -82,7 +128,7 @@ void apagar(int ind){
 
 }
 
-void buscar(int opt){
+void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja cadastradas
     int vt;
     int numero;
     char nom[30];
@@ -95,12 +141,12 @@ void buscar(int opt){
         printf(" [2 - Numero do conta  ]\n");
         printf(" [3 - Numero do CPF    ]\n");
         printf(" [4 - Nome do cliente  ]\n");
-        printf(" [1 - Sair             ]\n");
+        printf(" [5 - Sair para o menu ]\n");
 
         printf("Selecione uma opcao: ");
         scanf("%d", &vt);
 
-        switch(vt){
+        switch(vt){ // Switch case para o menu de busca
             case 1:
                 printf("Digite o numero do cliente: ");
                 scanf("%d", &numero);
@@ -186,26 +232,26 @@ void buscar(int opt){
         } while(vt < 1 && vt > 5);
 }
 
-int main(){
+int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e structs
     int opc;
 
     do{
         // Mostra ao usuário um menu de opções
         printf("\n=-=-=-=-=-=-=Menu principal=-=-=-=-=-=-=-=\n");
-        printf(" [1 - Incluir conta          ]\n");
+        printf(" [1 - Cadastrar conta        ]\n");
         printf(" [2 - Realizar busca         ]\n");
         printf(" [3 - Excluir conta          ]\n");
-        printf(" [4 - Mostrar todas as opcoes]\n");
+        printf(" [4 - Mostrar todas as contas]\n");
         printf(" [5 - Sair                   ]\n");
 
         // Solicita ao usuário que escolha uma opção
         printf("Digite uma opcao: ");
         scanf("%d", &opc);
 
-        switch(opc){
+        switch(opc){ // Switch case para o menu principal
             case 1:
                 if(quant < 10){
-                    printf("----------------Apagar conta do cliente----------------\n");
+                    printf("----------------Cadastrar conta do cliente----------------\n");
                     printf("=======================================================\n");
                     cadastrar();
                 } else {
@@ -215,7 +261,7 @@ int main(){
 
             case 2:
                 if(quant > 0){
-                    printf("---------------Buscar cadastro de cliente--------------\n");
+                    printf("---------------Realizar busca de cliente--------------\n");
                     printf("=======================================================\n");
                     buscar(1);
                 } else {
