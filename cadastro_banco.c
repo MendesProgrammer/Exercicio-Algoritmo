@@ -186,13 +186,14 @@ void mostrar(int ind){ // Funcao para exibir os dados de determinada conta
     printf("==============================\n");
 }
 
-void apagar(int ind){ // Funcao para apagar determinada conta ja cadastrada
+void apagar_registro(int ind){ // Funcao para apagar determinada conta ja cadastrada
     char car;
     do{
         mostrar(ind);
         printf("Deseja apagar? (s/n) ");
-        scanf("%c", &car);
         fflush(stdin);
+        scanf("%c", &car);
+        
         if(car != 's' && car != 'S' && car != 'n' && car != 'N'){
             printf("Erro, digite apenas S ou N\n");
         }
@@ -208,6 +209,129 @@ void apagar(int ind){ // Funcao para apagar determinada conta ja cadastrada
     } else if(car == 'n' || car == 'N'){
         printf("Retornando sem alteracoes\n");
     }
+
+}
+
+void apagar_maior(){
+    int num, maiorint, codint;
+    float maiornum;
+    char sn;
+    
+    do{
+        printf(" [1 - Numero de id do cliente   ]\n");
+        printf(" [2 - Numero da conta do cliente]\n");
+        printf(" [3 - Saldo da conta            ]\n");
+        printf(" [4 - Voltar ao menu            ]\n");
+
+        printf("Escolha ua opcao: ");
+        scanf("%d", &num);
+
+        switch (num){
+            case 1:
+                for(int i = 0; i < quant; i++){
+                    if(i == 0){
+                        maiorint = conta[i].numero;
+                        codint = i;
+                    } else if(conta[i].numero > maiorint){
+                        maiorint = conta[i].numero;
+                        codint = i;
+                    }
+                }
+
+                printf("Maior numero de id------------------\n");
+                mostrar(codint);
+                do{
+                    printf("Deseja apagar a seguinte conta? (s/n) ");
+                    fflush(stdin);
+                    scanf("%c", &sn);
+                    if(sn != 's' && sn != 'S' && sn != 'n' && sn != 'N'){
+                        printf("Erro, digite apenas ou S ou N\n");
+                    }
+                } while (sn != 's' && sn != 'S' && sn != 'n' && sn != 'N');
+                if(sn == 's' || sn == 'S'){
+                    for(int j = codint; j < quant-1; j++){
+                        conta[j] = conta[j+1];
+                    }
+                    quant--;
+                    printf("Confirmado, conta apagada\n");
+                } else {
+                    printf("Retornando ao menu\n");
+                }
+                break;
+
+            case 2:
+                for(int i = 0; i < quant; i++){
+                    if(i == 0){
+                        maiorint = conta[i].conta;
+                        codint = i;
+                    } else if(conta[i].conta > maiorint){
+                        maiorint = conta[i].conta;
+                        codint = i;
+                    }
+                }
+
+                printf("Maior numero de conta------------------\n");
+                mostrar(codint);
+                do{
+                    printf("Deseja apagar a seguinte conta? (s/n) ");
+                    fflush(stdin);
+                    scanf("%c", &sn);
+                    if(sn != 's' && sn != 'S' && sn != 'n' && sn != 'N'){
+                        printf("Erro, digite apenas ou S ou N\n");
+                    }
+                } while (sn != 's' && sn != 'S' && sn != 'n' && sn != 'N');
+                if(sn == 's' || sn == 'S'){
+                    for(int j = codint; j < quant-1; j++){
+                        conta[j] = conta[j+1];
+                    }
+                    quant--;
+                    printf("Confirmado, conta apagada\n");
+                } else {
+                    printf("Retornando ao menu\n");
+                }
+                break;
+
+            case 3:
+                for(int i = 0; i < quant; i++){
+                    if(i == 0){
+                        maiornum = conta[i].saldo;
+                        codint = i;
+                    } else if(conta[i].saldo > maiornum){
+                        maiornum = conta[i].saldo;
+                        codint = i;
+                    }
+                }
+
+                printf("Maior valor do saldo------------------\n");
+                mostrar(codint);
+                do{
+                    printf("Deseja apagar a seguinte conta? (s/n) ");
+                    fflush(stdin);
+                    scanf("%c", &sn);
+                    if(sn != 's' && sn != 'S' && sn != 'n' && sn != 'N'){
+                        printf("Erro, digite apenas ou S ou N\n");
+                    }
+                } while (sn != 's' && sn != 'S' && sn != 'n' && sn != 'N');
+                if(sn == 's' || sn == 'S'){
+                    for(int j = codint; j < quant-1; j++){
+                        conta[j] = conta[j+1];
+                    }
+                    quant--;
+                    printf("Confirmado, conta apagada\n");
+                } else {
+                    printf("Retornando ao menu\n");
+                }
+                break;
+
+            case 4:
+                break;
+            
+            default:
+                printf("Valor invalidado, apenas entre 1 e 5\n");
+                break;
+        }
+
+    } while (num < 1 || num > 4);
 
 }
 
@@ -239,7 +363,7 @@ void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja
                         if(opt == 1){
                             mostrar(i);
                         } else if(opt == 2){
-                            apagar(i);
+                            apagar_registro(i);
                         }
                     }
                 }
@@ -257,7 +381,7 @@ void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja
                         if(opt == 1){
                             mostrar(i);
                         } else if(opt == 2){
-                            apagar(i);
+                            apagar_registro(i);
                         }
                     }
                 }
@@ -275,7 +399,7 @@ void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja
                         if(opt == 1){
                             mostrar(i);
                         } else if(opt == 2){
-                            apagar(i);
+                            apagar_registro(i);
                         }
                     }
                 }
@@ -295,7 +419,7 @@ void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja
                         if(opt == 1){
                             mostrar(i);
                         } else if(opt == 2){
-                            apagar(i);
+                            apagar_registro(i);
                         }
                     }
                 }
@@ -321,11 +445,12 @@ int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e struc
     do{
         // Mostra ao usuário um menu de opções
         printf("\n=-=-=-=-=-=-=Menu principal=-=-=-=-=-=-=-=\n");
-        printf(" [1 - Cadastrar conta        ]\n");
-        printf(" [2 - Realizar busca         ]\n");
-        printf(" [3 - Excluir conta          ]\n");
-        printf(" [4 - Mostrar todas as contas]\n");
-        printf(" [5 - Sair                   ]\n");
+        printf(" [1 - Cadastrar conta         ]\n");
+        printf(" [2 - Realizar busca          ]\n");
+        printf(" [3 - Excluir conta registrada]\n");
+        printf(" [4 - Excluir conta maior     ]\n");
+        printf(" [5 - Mostrar todas as contas ]\n");
+        printf(" [6 - Sair                    ]\n");
 
         // Solicita ao usuário que escolha uma opção
         printf("Digite uma opcao: ");
@@ -354,7 +479,7 @@ int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e struc
 
             case 3:
                 if(quant > 0){
-                    printf("----------------Apagar conta do cliente----------------\n");
+                    printf("-----------Apagar conta do cliente(registro)-----------\n");
                     printf("=======================================================\n");
                     buscar(2);
                 } else {
@@ -363,6 +488,16 @@ int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e struc
                 break;
 
             case 4:
+                if(quant > 0){
+                    printf("-----------Apagar conta do cliente(maior)--------------\n");
+                    printf("=======================================================\n");
+                    apagar_maior();
+                } else {
+                    printf("Nao ha nenhuma conta registrada\n");
+                }
+                break;
+
+            case 5:
                 if(quant > 0){
                     printf("---------Mostrar todos os clientes cadastrados---------\n");
                     for(int i = 0; i < quant; i++){
@@ -373,7 +508,7 @@ int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e struc
                 }
                 break;
 
-            case 5:
+            case 6:
                 printf("Finalizando programa\n");
                 break;
 
@@ -381,7 +516,7 @@ int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e struc
                 break;
         }
 
-    } while(opc != 5);
+    } while(opc != 6);
 
     return 0;
 }
