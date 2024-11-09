@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define Tamanho 10
+#define Tamanho 10 // Tamanho máximo da nossa variável
 
 typedef struct{
     int conta; // Número de conta
@@ -17,12 +17,13 @@ banco conta[Tamanho];
 
 void cadastrar(){ // Funcao para o cadastro de novas contas
     char tipo, cnova;
-    int id, i, flag=0, posi = 0;
+    int id, i, flag=0, posi = 0, cpf, num_conta = 0, flag_conta = 0;
+    float num_saldo;
 
     printf("Digite o id do cliente: ");
     scanf("%d", &id);
 
-    for (i = 0; i <= quant; i++) { // Repeticao para ver se ja existe uma conta cadastrada no ID do cliente
+    for (i = 0; i < quant; i++) { // Repeticao para ver se ja existe uma conta cadastrada no ID do cliente
         if (conta[i].numero == id) {
         flag = 1; // flag vira 1 
         posi = i; // a posicao da conta ja cadastrada é salva, para buscarmos os dados depois
@@ -30,27 +31,40 @@ void cadastrar(){ // Funcao para o cadastro de novas contas
     }
 
     if (flag == 1) { // Caso a flag for verdadeira, puxamos o CPF e nome ja existente para a nova conta
-        printf ("Ja existe um cliente com esse id, deseja cadastrar mais uma conta para ele? (s/n)\n");
-        scanf ("%s", &cnova);
+        do{
+            printf ("Ja existe um cliente com esse id, deseja cadastrar mais uma conta para ele? (s/n)\n");
+            fflush(stdin);
+            scanf ("%s", &cnova);
+            if(cnova != 's' && cnova != 'S' && cnova != 'n' && cnova != 'N'){
+                printf("Erro, digite apenas ou S ou N\n");
+            }
+        } while (cnova != 's' && cnova != 'S' && cnova != 'n' && cnova != 'N');
 
-        if (tolower(cnova) == 's'){
+        if (cnova == 's'){ 
             conta[quant].numero = id;
-            
             conta[quant].cpf = conta[posi].cpf;
-            printf("o CPF da conta e: %d\n", conta[quant].cpf);
-
             strcpy(conta[quant].nome,conta[posi].nome);
+
+            printf("O id da conta e: %d\n", conta[quant].numero);
+            printf("O CPF da conta e: %d\n", conta[quant].cpf);
             printf("O nome do cliente e: %s\n", conta[quant].nome);
             
-
-            printf("Digite o numero da conta: \n");
-            scanf("%d", &conta[quant].conta);
-            fflush(stdin);
+            do{
+                flag_conta = 0;
+                printf("Digite o numero da conta: \n");
+                scanf("%d", &num_conta);
+                for(int i = 0; i < quant; i++){
+                    if(num_conta == conta[i].conta){
+                        printf("Erro, este codigo ja foi usado\n");
+                        flag_conta = 1;
+                    }
+                }
+            } while(flag_conta == 1);
 
 
         }
 
-        else if (tolower(cnova) == 'n') { // se o cliente nao quiser cadastrar uma nova conta, ele retorna ao menu
+        else if (cnova == 'n') { // se o cliente nao quiser cadastrar uma nova conta, ele retorna ao menu
             printf ("Cadastro encerrado, voltando ao menu\n");
             return;
         }
@@ -62,18 +76,81 @@ void cadastrar(){ // Funcao para o cadastro de novas contas
 
     }
 
-    else { // caso o id nao tenha nenhuma conta ja cadastrada, o cadastro da nova conta segue normalmente
+    else if (flag == 0) { // caso o id nao tenha nenhuma conta ja cadastrada, o cadastro da nova conta segue normalmente, dessa vez verificando o CPF
+
         conta[quant].numero = id;
+
         printf("Digite o numero CPF: ");
-        scanf("%d", &conta[quant].cpf);
+        scanf("%d", &cpf);
 
-        printf("Digite o numero da conta: ");
-        scanf("%d", &conta[quant].conta);
+        for (i = 0; i < quant; i++) { // Repeticao para ver se ja existe uma conta cadastrada no CPF do cliente
+            if (conta[i].cpf == cpf) {
+                flag = 1; // flag vira 1 
+                posi = i; // a posicao da conta ja cadastrada é salva, para buscarmos os dados depois
+            }
+        }
 
-        printf("Digite o nome do cliente: ");
-        gets(conta[quant].nome);
-        fflush(stdin);
-        
+        if (flag == 1) { // Caso a flag for verdadeira, puxamos o CPF, ID e nome ja existente para a nova conta
+            do{
+                printf ("Ja existe um cliente com esse id, deseja cadastrar mais uma conta para ele? (s/n)\n");
+                fflush(stdin);
+                scanf ("%s", &cnova);
+                if(cnova != 's' && cnova != 'S' && cnova != 'n' && cnova != 'N'){
+                    printf("Erro, digite apenas ou S ou N\n");
+                }
+            } while (cnova != 's' && cnova != 'S' && cnova != 'n' && cnova != 'N');
+
+            if (cnova == 's'){
+                conta[quant].numero = conta[posi].numero;
+                conta[quant].cpf = conta[posi].cpf;
+                strcpy(conta[quant].nome,conta[posi].nome);
+
+                printf("o ID da conta ja cadastrado nesse CPF e: %d\n", conta[quant].numero); // Exibimos o ID antigo que ja cadastrado ao CPF
+                printf("o CPF da conta e: %d\n", conta[quant].cpf);
+                printf("O nome do cliente e: %s\n", conta[quant].nome);
+            
+
+                do{
+                    flag_conta = 0;
+                    printf("Digite o numero da conta: \n");
+                    scanf("%d", &num_conta);
+                    for(int i = 0; i < quant; i++){
+                        if(num_conta == conta[i].conta){
+                            printf("Erro, este codigo ja foi usado\n");
+                            flag_conta = 1;
+                        }
+                    }
+                } while(flag_conta == 1);
+
+
+            }
+
+            else if (cnova == 'n') { // se o cliente nao quiser cadastrar uma nova conta, ele retorna ao menu
+                printf ("Cadastro encerrado, voltando ao menu\n");
+                return;
+            }
+
+            else {
+                printf("Codigo invalido\n");
+                return;
+            }
+
+        }
+
+
+        else { // em nenhum dos casos de dados iguais, o cadastro segue normalmente
+
+            conta[quant].cpf = cpf;
+
+            printf("Digite o numero da conta: ");
+            scanf("%d", &conta[quant].conta);
+
+            printf("Digite o nome do cliente: ");
+            fflush(stdin);
+            gets(conta[quant].nome);
+            
+        }
+            
     }
 
     do{
@@ -85,8 +162,14 @@ void cadastrar(){ // Funcao para o cadastro de novas contas
     } while(tipo != 'd' && tipo != 'D' && tipo != 'p' && tipo != 'P' && tipo != 's' && tipo != 'S');
     conta[quant].opcao = tipo;
 
-    printf("Digite o saldo da conta: ");
-    scanf("%f", &conta[quant].saldo);
+    do{
+        printf("Digite o saldo da conta: ");
+        scanf("%f", &num_saldo);
+        if(num_saldo < 0){
+            printf("Nao e permitido saldo negativo\n");
+        }
+    } while (num_saldo < 0);
+    conta[quant].saldo = num_saldo;
 
     quant++; // Adicionando 1 ao contador do numero de contas
 }
@@ -95,7 +178,7 @@ void mostrar(int ind){ // Funcao para exibir os dados de determinada conta
     printf("Cliente encontrado\n");
     printf("==============================\n");
     printf("Numero da conta: %d\n", conta[ind].conta);
-    printf("Numero do cliente: %d\n", conta[ind].numero);
+    printf("ID do cliente: %d\n", conta[ind].numero);
     printf("Numero do CPF: %d\n", conta[ind].cpf);
     printf("Nome do cliente: %s\n", conta[ind].nome);
     printf("Tipo da conta: %c\n", conta[ind].opcao);
@@ -137,7 +220,7 @@ void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja
 
         do{
 
-        printf(" [1 - Numero do cliente]\n");
+        printf(" [1 - ID do cliente    ]\n");
         printf(" [2 - Numero do conta  ]\n");
         printf(" [3 - Numero do CPF    ]\n");
         printf(" [4 - Nome do cliente  ]\n");
@@ -148,7 +231,7 @@ void buscar(int opt){ // Funcao para buscar determinado dado dentre as contas ja
 
         switch(vt){ // Switch case para o menu de busca
             case 1:
-                printf("Digite o numero do cliente: ");
+                printf("Digite o ID do cliente: ");
                 scanf("%d", &numero);
                 for(int i = 0; i < quant; i++){
                     if(numero == conta[i].numero){
