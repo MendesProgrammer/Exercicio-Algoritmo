@@ -458,7 +458,7 @@ int main(){ // iniciando o int main apos ter cadastrado todas as funcoes e struc
 
         switch(opc){ // Switch case para o menu principal
             case 1:
-                if(quant < 10){
+                if(quant < Tamanho){
                     printf("----------------Cadastrar conta do cliente----------------\n");
                     printf("=======================================================\n");
                     cadastrar();
